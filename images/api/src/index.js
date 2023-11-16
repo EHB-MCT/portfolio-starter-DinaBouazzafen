@@ -9,28 +9,29 @@ const db = knex(knexfile.development)
 
 
 const port = 3000;
-app.use(express.json());
+app.use(express.json()); 
 
-app.get("/", async (req, res) => {
+app.get("/api", async (req, res) => {
   const users = await db.select().from("users");
   res.send(users);
 });
 
 app.get("/api/makeup-products", async (req, res) => {
-  const makeupProducts = await db.select().from("makeup_products");
+  const makeupProducts = await db.select().from("makeup");
   res.json(makeupProducts);
 });
 
 app.post("/api/makeup-products", async (req, res) => {
   const { name, brand } = req.body;
-  const newMakeupProduct = await db("makeup_products").insert({ name, brand }).returning("*");
+  const newMakeupProduct = await db("makeup").insert({ name, brand }).returning("*");
   res.json(newMakeupProduct);
 });
 
 app.put("/api/makeup-products/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, brand } = req.body;
-  const updatedMakeupProduct = await db("makeup_products")
+  const { name, brand } = req.body; 
+  
+  const updatedMakeupProduct = await db("makeup")
     .where({ id })
     .update({ name, brand })
     .returning("*");
@@ -43,7 +44,7 @@ app.put("/api/makeup-products/:id", async (req, res) => {
 
 app.delete("/api/makeup-products/:id", async (req, res) => {
   const { id } = req.params;
-  const numDeleted = await db("makeup_products").where({ id }).del();
+  const numDeleted = await db("makeup").where({ id }).del();
   if (numDeleted === 0) {
     res.status(404).json({ error: "Makeup product not found" });
   } else {
