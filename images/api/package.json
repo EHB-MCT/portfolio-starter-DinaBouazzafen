@@ -4,23 +4,24 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "npm run migrate && nodemon src/index.js",
-    "migrate": "npx knex migrate:latest --cwd src/db",
-    "test": "jest --watchAll",
-    "migrate:latest": "npx knex migrate:latest"
+    "start": "npx knex migrate:latest --cwd src/db && npm run test && nodemon src/index.js",
+    "dev": "npx knex migrate:latest --cwd src/db && npx knex seed: run --cwd src/db && npm run test-watch",
+    "test": "jest --detectOpenHandles",
+    "test-watch": "jest --watchAll --detectOpenHandles"
   },
   "author": "dina bouazzafen",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "jest": "^29.7.0",
     "knex": "^2.5.1",
     "node": "^20.7.0",
     "pg": "^8.11.3",
     "postgresql": "^0.0.1"
   },
   "devDependencies": {
+    "assert": "^2.1.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.1"
   }
 }

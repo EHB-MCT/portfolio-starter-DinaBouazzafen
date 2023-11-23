@@ -1,3 +1,4 @@
+const {checkBrandName} = require("./helpers/endpointHelpers")
 const express = require("express");
 const app = express();
 require('dotenv').config();
@@ -22,7 +23,30 @@ app.get("/api/makeup-products", async (req, res) => {
 });
 
 app.post("/api/makeup-products", async (req, res) => {
-  const { name, brand } = req.body;
+  const { id, name, brand } = req.body;
+  if (checkBrandName(name)) {
+    try {
+        await db('makeup').insert({
+          id,
+          name,
+          brand
+        });
+        res.status(201).send({
+          message: 'Brand is succesfully created :)'
+        });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).send({
+        error: "Something is wrong babygirl",
+        value: error
+      });
+    }
+  } else {
+    res.status(401).send({
+      message: "Name is wrongly formatted darling",
+    });
+  }
   const newMakeupProduct = await db("makeup").insert({ name, brand }).returning("*");
   res.json(newMakeupProduct);
 });
