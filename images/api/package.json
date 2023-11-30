@@ -4,10 +4,11 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "npx knex migrate:latest --cwd src/db && npm run test && nodemon src/index.js",
-    "dev": "npx knex migrate:latest --cwd src/db && npx knex seed: run --cwd src/db && npm run test-watch",
-    "test": "jest --detectOpenHandles",
-    "test-watch": "jest --watchAll --detectOpenHandles"
+    "start": "npm run prep && nodemon src/index.js",
+    "dev": "npm run prep && npm run test-watch",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test-watch": "jest --watchAll --detectOpenHandles",
+    "prep": "npx knex migrate:latest --cwd src/db && npx knex seed:run --cwd src/db"
   },
   "author": "dina bouazzafen",
   "license": "ISC",
