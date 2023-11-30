@@ -32,3 +32,85 @@ describe('GET /api/makeup-products/:id', () => {
       expect(response.status).toBe(404);
     });
   });
+
+  describe('POST /api/makeup-products', () => {
+  test('should create a new makeup product', async () => {
+    const newMakeupProduct = {
+      name: 'Test Product',
+      brand: 'Test Brand',
+    };
+
+    const response = await request(app)
+      .post('/api/makeup-products')
+      .send(newMakeupProduct);
+
+    expect(response.status).toBe(201);
+    expect(response.body.message).toBe('Brand is successfully created :)');
+
+    // You can add more assertions to check the created makeup product if needed
+  });
+
+  test('should handle invalid input data', async () => {
+    const invalidMakeupProduct = {
+      name: '', // Invalid name
+      brand: 'Test Brand',
+    };
+
+    const response = await request(app)
+      .post('/api/makeup-products')
+      .send(invalidMakeupProduct);
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe('Name is wrongly formatted darling');
+  });
+});
+
+describe('PUT /api/makeup-products/:id', () => {
+  test('should update an existing makeup product', async () => {
+    const updatedMakeupProduct = {
+      name: 'Updated Product Name',
+      brand: 'Updated Brand',
+    };
+
+    const response = await request(app)
+      .put('/api/makeup-products/1') // Replace with a valid makeup product ID from your database
+      .send(updatedMakeupProduct);
+
+    expect(response.status).toBe(200);
+    // You can add more assertions to check the updated makeup product if needed
+  });
+
+  test('should handle updating a non-existent makeup product', async () => {
+    const updatedMakeupProduct = {
+      name: 'Updated Product Name',
+      brand: 'Updated Brand',
+    };
+
+    const nonExistentProductId = 999; // Replace with an invalid ID
+
+    const response = await request(app)
+      .put(`/api/makeup-products/${nonExistentProductId}`)
+      .send(updatedMakeupProduct);
+
+    expect(response.status).toBe(404);
+  });
+});
+
+describe('DELETE /api/makeup-products/:id', () => {
+  test('should delete an existing makeup product', async () => {
+    const response = await request(app)
+      .delete('/api/makeup-products/1') // Replace with a valid makeup product ID from your database
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Makeup product deleted successfully');
+  });
+
+  test('should handle deleting a non-existent makeup product', async () => {
+    const nonExistentProductId = 999; // Replace with an invalid ID
+
+    const response = await request(app)
+      .delete(`/api/makeup-products/${nonExistentProductId}`)
+
+    expect(response.status).toBe(404);
+  });
+});
