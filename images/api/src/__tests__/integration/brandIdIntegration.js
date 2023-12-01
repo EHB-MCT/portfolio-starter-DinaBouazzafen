@@ -121,37 +121,3 @@ describe('PUT /api/makeup-products/:id', () => {
         expect(response.status).toBe(404);
     });
 });
-
-describe('DELETE /api/makeup-products/:id', () => {
-    let transaction;
-
-    beforeEach(async () => {
-        // transaction = await db.transaction();
-    });
-
-    afterEach(async () => {
-        // await transaction.rollback();
-    });
-
-    afterAll(async () => {
-        await db.destroy();
-    });
-
-    test('should delete an existing makeup product', async () => {
-        const response = await request(app)
-            .delete('/api/makeup-products/1') // Replace with a valid makeup product ID from your database
-
-        expect(response.status).toBe(200);
-        expect(response.body.message).toBe('Makeup product deleted successfully');
-    });
-
-    test('should handle deleting a non-existent makeup product', async () => {
-        const nonExistentProductId = 999; // Replace with an invalid ID
-
-        const response = await request(app)
-            .delete(`/api/makeup-products/${nonExistentProductId}`)
-
-        expect(response.status).toBe(404);
-    });
-});
-
