@@ -7,7 +7,9 @@ describe('GET /api/makeup-products/:id', () => {
     let transaction;
 
     beforeEach(async () => {
-        //transaction = await db.transaction();
+        transaction = await db.transaction();
+
+
     });
 
     afterEach(async () => {
