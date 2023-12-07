@@ -6,10 +6,9 @@
   "scripts": {
     "start": "npm run prep && nodemon src/index.js",
     "dev": "npm run prep && npm run test-watch",
-    "ci": "npm run prep && npm run test",
     "test": "jest --detectOpenHandles --forceExit",
     "test-watch": "jest --watchAll --detectOpenHandles",
-    "prep": "npx knex migrate:latest --cwd src/db"
+    "prep": "npx knex migrate:latest --cwd src/db && npx knex seed:run --cwd src/db"
   },
   "author": "dina bouazzafen",
   "license": "ISC",
