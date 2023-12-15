@@ -2,11 +2,11 @@ name: testflow
 
 on:
   push:
-    branches: [ main, Development ] 
+    branches: [ main ] 
 
 env: 
   POSTGRES_USER: test
-  POSTGRES_PASSWORD: dev
+  POSTGRES_PASSWORD: test
   POSTGRES_DB: test
   
 jobs:
@@ -14,33 +14,32 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: build docker containers
         run: docker-compose build 
 
       - name: run docker containers
-        run: 
+        run: |
           echo --- Running test cases ---
-          docker-compose -f docker-compose.ci.yml up --exit-code-from api
+          docker-compose up --exit-code-from api
           echo --- Completed test cases ---
-
+  
   build:
     needs: test
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       - name: build
         run: docker-compose build
       
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: publish
         run: docker-compose push
-  
