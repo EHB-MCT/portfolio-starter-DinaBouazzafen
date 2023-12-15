@@ -38,8 +38,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.dina248 }}
-          password: ${{ secrets.dckr_pat_JU_wxy5d4nhQfqNP7O3BBKIoydI }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: publish
         run: docker-compose push
