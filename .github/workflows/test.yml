@@ -20,7 +20,7 @@ jobs:
         run: docker-compose build 
 
       - name: run docker containers
-        run: |
+        run: 
           echo --- Running test cases ---
           docker-compose up --exit-code-from api
           echo --- Completed test cases ---
