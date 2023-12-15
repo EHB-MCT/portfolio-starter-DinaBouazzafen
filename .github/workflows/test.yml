@@ -6,7 +6,7 @@ on:
 
 env: 
   POSTGRES_USER: test
-  POSTGRES_PASSWORD: dina
+  POSTGRES_PASSWORD: dev
   POSTGRES_DB: test
   
 jobs:
