@@ -21,7 +21,6 @@ describe('POST /api/makeup-products', () => {
 
         expect(response.status).toBe(201);
         expect(response.body.message).toBe('Brand is successfully created :)');
-        // Add additional assertions based on your data model
     });
 
     test('should handle creating a makeup product with invalid data', async () => {

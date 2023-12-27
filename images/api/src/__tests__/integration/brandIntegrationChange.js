@@ -31,7 +31,6 @@ describe('PUT /api/makeup-products/:id', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBeGreaterThan(0);
-        // Add additional assertions based on your data model
     });
 
     test('should handle updating a non-existent makeup product', async () => {
