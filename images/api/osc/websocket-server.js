@@ -7,12 +7,16 @@ const udpPort = new osc.UDPPort({
   localAddress: '127.0.0.1',
   localPort: 5335,
 });
+
+// Initialize lastValues here, outside of any function
+const lastValues = { r: null, g: null, b: null };
+
 console.log('Script started');
 
-// Object to keep track of message counts
+// Object to keep track of message counts and logged status
 const messageCounts = {};
+const loggedColors = {};
 const maxCountThreshold = 300; // The count threshold for logging the message
-const lastValues = { r: null, g: null, b: null }; // Store the last values of r, g, and b
 
 udpPort.on('message', (oscMessage) => {
   const address = oscMessage.address;
@@ -21,33 +25,34 @@ udpPort.on('message', (oscMessage) => {
   // Check if the message is for r, g, or b
   if (address === '/r' || address === '/g' || address === '/b') {
     const colorComponent = address.substring(1); // 'r', 'g', or 'b'
-    lastValues[colorComponent] = value; // Update the last value for r, g, or b
-
-    const messageKey = `${colorComponent}_${value}`;
     
+    lastValues[colorComponent] = value; // Update the last value for r, g, or b
+    const messageKey = `${colorComponent}_${value}`;
+    const hexColor = rgbToHex(lastValues.r, lastValues.g, lastValues.b);
+    
+    // Check if we've already logged this color
+    if (loggedColors[hexColor]) return;
+
     // Initialize count if new message
-    if (messageCounts[messageKey] === undefined) {
+    if (!messageCounts[messageKey]) {
       messageCounts[messageKey] = 1;
     } else {
-      // Increment the count for the message
-      messageCounts[messageKey]++;
+      messageCounts[messageKey]++; // Increment the count for the message
     }
 
-    // Check if the message has been received 60 times
+    // Check if the message has been received 300 times
     if (messageCounts[messageKey] === maxCountThreshold) {
-      // Convert the RGB values to a hex color
-      const hexColor = rgbToHex(lastValues.r, lastValues.g, lastValues.b);
       console.log(`Received ${maxCountThreshold} times the same color: #${hexColor}`);
-      
-      // Reset the counts for all components of this color
-      ['r', 'g', 'b'].forEach(comp => {
-        messageCounts[`${comp}_${lastValues[comp]}`] = undefined;
+      loggedColors[hexColor] = true; // Mark this color as logged
+      Object.keys(messageCounts).forEach(key => {
+        if (key.startsWith(colorComponent)) {
+          messageCounts[key] = undefined;
+        }
       });
     }
   }
 });
 
-// Function to convert RGB to Hex
 function rgbToHex(r, g, b) {
   return [r, g, b].map(x => {
     const hex = Math.round(x * 255).toString(16);
@@ -59,19 +64,8 @@ udpPort.open();
 
 wss.on('connection', (ws) => {
   console.log('WebSocket Client Connected');
-
-  ws.on('close', () => {
-    console.log('WebSocket Client Disconnected');
-  });
+  ws.on('close', () => console.log('WebSocket Client Disconnected'));
 });
 
-udpPort.on('error', function (error) {
-  console.log("An error occurred: ", error.message);
-});
-
-wss.on('error', function (error) {
-  console.log("A WebSocket error occurred: ", error.message);
-});
-
-
-
+udpPort.on('error', (error) => console.log("An error occurred: ", error.message));
+wss.on('error', (error) => console.log("A WebSocket error occurred: ", error.message));
