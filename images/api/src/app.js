@@ -9,11 +9,6 @@ const db = knex(knexfile.development);
 
 app.use(express.json());
 
-app.get('/api', async (req, res) => {
-  const users = await db.select().from('users');
-  res.send(users);
-});
-
 app.get('/api/makeup-products/:id', async (req, res) => {
   const { id } = req.params;
 

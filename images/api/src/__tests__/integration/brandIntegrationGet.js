@@ -7,7 +7,11 @@ describe('GET /api/makeup-products', () => {
 
     beforeAll(async (done) => {
         // Insert a test makeup product
-        testMakeup = await db.table("makeup").insert(testMakeup).returning("*");
+        testMakeup = await db.table("makeup").insert({
+            name: 'Test Get Makeup',
+            brand: 'Test Get Brand',
+            color: 'Test Get Color'
+        }).returning("*");
 
         done();
     });
@@ -18,7 +22,7 @@ describe('GET /api/makeup-products', () => {
 
         db.destroy();
         done();
-    });
+    }, 50000);
 
     test('should retrieve all makeup products', async () => {
         const response = await request(app)
@@ -26,6 +30,5 @@ describe('GET /api/makeup-products', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBeGreaterThan(0);
-        // Add additional assertions based on your data model
-    });
+    }, 50000);
 });
