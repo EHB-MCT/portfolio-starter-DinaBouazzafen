@@ -11,36 +11,49 @@ console.log('Script started');
 
 // Object to keep track of message counts
 const messageCounts = {};
+const maxCountThreshold = 300; // The count threshold for logging the message
+const lastValues = { r: null, g: null, b: null }; // Store the last values of r, g, and b
 
 udpPort.on('message', (oscMessage) => {
-  const messageKey = oscMessage.address + '_' + oscMessage.args.join('_');
-  
-  // Initialize count if new message
-  if (!messageCounts[messageKey]) {
-    messageCounts[messageKey] = 0;
-  }
+  const address = oscMessage.address;
+  const value = oscMessage.args[0];
 
-  // Increment the count for the message
-  messageCounts[messageKey]++;
-  
-  // Check if the message has been received 60 times
-  if (messageCounts[messageKey] === 60) {
-    console.log('Received 60 times:', oscMessage);
+  // Check if the message is for r, g, or b
+  if (address === '/r' || address === '/g' || address === '/b') {
+    const colorComponent = address.substring(1); // 'r', 'g', or 'b'
+    lastValues[colorComponent] = value; // Update the last value for r, g, or b
+
+    const messageKey = `${colorComponent}_${value}`;
     
-    // Reset the count after logging
-    messageCounts[messageKey] = 0;
-  }
+    // Initialize count if new message
+    if (messageCounts[messageKey] === undefined) {
+      messageCounts[messageKey] = 1;
+    } else {
+      // Increment the count for the message
+      messageCounts[messageKey]++;
+    }
 
-  // Optionally, you might want to send the OSC message only when it's logged
-  if (messageCounts[messageKey] === 0) {
-    // Send the OSC message to all connected WebSocket clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(oscMessage));
-      }
-    });
+    // Check if the message has been received 60 times
+    if (messageCounts[messageKey] === maxCountThreshold) {
+      // Convert the RGB values to a hex color
+      const hexColor = rgbToHex(lastValues.r, lastValues.g, lastValues.b);
+      console.log(`Received ${maxCountThreshold} times the same color: #${hexColor}`);
+      
+      // Reset the counts for all components of this color
+      ['r', 'g', 'b'].forEach(comp => {
+        messageCounts[`${comp}_${lastValues[comp]}`] = undefined;
+      });
+    }
   }
 });
+
+// Function to convert RGB to Hex
+function rgbToHex(r, g, b) {
+  return [r, g, b].map(x => {
+    const hex = Math.round(x * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  }).join('');
+}
 
 udpPort.open();
 
@@ -59,4 +72,6 @@ udpPort.on('error', function (error) {
 wss.on('error', function (error) {
   console.log("A WebSocket error occurred: ", error.message);
 });
+
+
 
