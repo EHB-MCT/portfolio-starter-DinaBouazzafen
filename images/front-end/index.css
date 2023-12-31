@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+body {
+    height: 100vh;
+    overflow: hidden;
+    width: 100vw;
+}
+#threejs-container {
+    position: block;
+    width: 100%;
+    height: 100%;
+}
+#grunge {
+    width: 110%;
+    margin: 0%;
+    margin-top: -0.6%;
+    margin-left: -5%;
+    position: fixed;
+    z-index: -1;
+}
+#forum {
+    width: 60%;
+    margin: 20%;
+    position: fixed;
+    z-index: -1;
+}
+#title{
+    width: 70%;
+    position: fixed;
+    z-index: -1;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#collage1{
+    width: 10%;
+    margin: 45%;
+    margin-left: 20%;    
+    position: fixed;
+}
+#collage4{
+    width: 10%;
+    margin: 38%;
+    margin-left: 77%;    
+    position: fixed;
+}
+#collage5{
+    width: 25%;
+    margin: 33%;
+    margin-left: 8%;
+    position: fixed;
+}
+#collage6{
+    width: 10%;
+    margin: 35%;
+    margin-left: 12%;
+    position: fixed;
+}
+#collage7{
+    width: 25%;
+    margin: 17%;
+    margin-left: 68%;
+    position: fixed;
+}
+#collage8{
+    width: 15%;
+    margin: 45%;
+    margin-left: 70%;
+    position: fixed;
+}
+#collage9{
+    width: 5%;
+    margin: 35%;
+    margin-left: 78%;
+    position: fixed;
+}
+#questions form {
+    margin-top: -30.1%;
+    margin-left: 23%;
+
+}
+#questions form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#questions label {
+    margin-top: 10px;
+}
+
+#questions input[type="text"] {
+    background-color: transparent; /* Makes background transparent */
+    color: #000; /* Set the text color */
+    padding: 5px;
+    margin: 5px;
+    font-family: 'VT323';
+    font-size: 13pt;
+    width: 25%; /* Adjust width as needed */
+    display: block;
+    border: none;
+    
+}
+
+#questions #submitBtn {
+    margin-top: 79px;
+    margin-left: 10px;
+    width: 85px; 
+    height: 37px;
+    background-color: transparent;
+    border: 2px solid rgb(255, 0, 0);
+    cursor: pointer;
+}
+
