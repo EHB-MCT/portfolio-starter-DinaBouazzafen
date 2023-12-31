@@ -9,40 +9,19 @@ const db = knex(knexfile.development);
 
 app.use(express.json());
 
-app.get('/api/makeup-products/:id', async (req, res) => {
-  const { id } = req.params;
-
-  const makeupProduct = await db('makeup')
-    .where({ id })
-    .first();
-
-  if (!makeupProduct) {
-    res.status(404).json({ error: 'Makeup product not found' });
-  } else {
-    res.json(makeupProduct);
-  }
-});
-
 app.get('/api/makeup-products', async (req, res) => {
   const makeupProducts = await db.select().from('makeup');
   res.json(makeupProducts);
 });
 
 app.post('/api/makeup-products', async (req, res) => {
-  const { id, name, brand } = req.body;
+  const { name, brand, color } = req.body;
   if (checkBrandName(name)) {
     try {
-      await db('makeup').insert({
-        id,
-        name,
-        brand,
-      });
-      res.status(201).send({
-        message: 'Brand is successfully created :)',
-      });
+      const newMakeupProduct = await db('makeup').insert({ name, brand, color }).returning('*');
+      res.status(201).json(newMakeupProduct);
     } catch (error) {
       console.log(error);
-
       res.status(500).send({
         error: 'Something is wrong babygirl',
         value: error,
@@ -52,25 +31,40 @@ app.post('/api/makeup-products', async (req, res) => {
     res.status(401).send({
       message: 'Name is wrongly formatted darling',
     });
-  }
-  const newMakeupProduct = await db('makeup').insert({ name, brand }).returning('*');
-  res.json(newMakeupProduct);
+  } 
 });
+
 
 app.put('/api/makeup-products/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, brand } = req.body;
+  const { name, brand, color } = req.body;
 
-  const updatedMakeupProduct = await db('makeup')
-    .where({ id })
-    .update({ name, brand })
-    .returning('*');
-  if (updatedMakeupProduct.length === 0) {
-    res.status(404).json({ error: 'Makeup product not found' });
-  } else {
-    res.json(updatedMakeupProduct);
+  // Check for missing required fields in the request body
+  if (!name || !brand || !color) {
+    return res.status(400).send({ error: 'Missing required fields' });
+  }
+
+  try {
+    const updatedMakeupProduct = await db('makeup')
+      .where({ id })
+      .update({ name, brand, color })
+      .returning('*');
+
+    // Check if the product was found and updated
+    if (updatedMakeupProduct.length === 0) {
+      res.status(404).json({ error: 'Makeup product not found' });
+    } else {
+      res.json(updatedMakeupProduct[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      error: 'An error occurred while updating the product',
+      details: error.message
+    });
   }
 });
+
 
 app.delete('/api/makeup-products/:id', async (req, res) => {
   const { id } = req.params;
