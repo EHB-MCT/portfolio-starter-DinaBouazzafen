@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Makeup</title>
+      <link rel="stylesheet" href="./index.css">
+      <script type="module" src="./index.js"></script>
+      <script type="module" src="../api/osc/websocket-server.js"></script>
+
+
+   </head>
+   <body>
+      <div id="bg">
+         <img id="grunge" src="./imgs/bg.png" alt="grunge background">
+         <img id="title" src="./imgs/title.png" alt="title"> 
+         <img id="forum" src="./imgs/forum.png" alt="forum"> 
+         <img id="collage1" src="./imgs/boots.png" alt="collage1"> 
+         <img id="collage4" src="./imgs/cd.png" alt="collage4"> 
+         <img id="collage5" src="./imgs/corset.png" alt="collage5"> 
+         <img id="collage6" src="./imgs/eye.png" alt="collage6"> 
+         <img id="collage7" src="./imgs/guitar.png" alt="collage7"> 
+         <img id="collage8" src="./imgs/lips.png" alt="collage8"> 
+         <img id="collage9" src="./imgs/star.png" alt="collage9"> 
+
+
+         <div id="threejs-container"></div>
+         <script type="module" src="./3js/threejs.js"></script>
+      </div>
+      <div id="questions">
+         <form>
+             <label for="brandName"></label>
+             <input type="text" id="brandName" name="brandName" placeholder="Enter brand name">
+ 
+             <label for="productName"></label>
+             <input type="text" id="productName" name="productName" placeholder="Enter product name">
+ 
+             <label for="color"></label>
+             <input type="text" id="color" name="color" placeholder="Color chosen">
+ 
+             <button type="submit" id="submitBtn"></button>
+            </form>
+     </div>
+  </body>
+  
+  
+</html>

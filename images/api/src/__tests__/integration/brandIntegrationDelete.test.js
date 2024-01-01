@@ -3,62 +3,55 @@ const app = require('./../../app.js'); // Replace with the path to your Express 
 const knexfile = require('./../../db/knexfile.js'); // Replace with the path to your Knex configuration
 const db = require("knex")(knexfile.development);
 
-let testMakeup = {
-    brand: "TEST",
-    name: "Chocolate Mint Test"
-}
-
 describe('DELETE /api/makeup-products/:id', () => {
     let transaction;
 
-    beforeAll((done) => {
-        db.raw("BEGIN");
-        db.table("makeup").insert(testMakeup).returning("*").then((data) => {
-            if(data[0]) {
-                testMakeup["id"] = data[0].id;
-                done();
-            } else {
-
-            }
-        });
+    beforeEach(async () => {
+        transaction = await db.transaction();
     });
 
-    afterAll((done) => {
-        db.table("makeup").delete().where({id: testMakeup.id}).then(() =>{
+    afterEach(async () => {
+        await transaction.rollback();
+    });
 
-            db.destroy();
-            done();
-        })
-
+    afterAll(async () => {
+        await db.destroy();
     });
 
     test('should delete an existing makeup product', async () => {
+        const testMakeup = await insertTestMakeupProduct(transaction);
+
         const response = await request(app)
-            .delete('/api/makeup-products/'+ testMakeup.id) // Replace with a valid makeup product ID from your database
+            .delete(`/api/makeup-products/${testMakeup.id}`)
 
         expect(response.status).toBe(200);
         expect(response.body.message).toBe('Makeup product deleted successfully');
 
-        const data = await db.select().table("makeup").where({id: testMakeup});
-        expect(data.length).toBe(0)
-    });
+        const data = await transaction.select().table("makeup").where({id: testMakeup.id});
+        expect(data.length).toBe(0);
+
+        await transaction.rollback();
+    }, 10000);
 
     test('should handle deleting a non-existent makeup product', async () => {
-
-        const data = await db.table("makeup").select();
-        const preLength = data.length;
-
-        const nonExistentProductId = 999; // Replace with an invalid ID
+        const nonExistentProductId = 999; 
 
         const response = await request(app)
-            .delete(`/api/makeup-products/${nonExistentProductId}`)
+            .delete(`/api/makeup-products/${nonExistentProductId}`);
 
         expect(response.status).toBe(404);
 
-        const afterData = await db.table("makeup").select();
-        const afterLength = data.length;
-
-        expect(preLength).toEqual(afterLength);
-    });
+        await transaction.rollback();
+    }, 10000);
 });
+
+async function insertTestMakeupProduct(transaction) {
+    const [testMakeup] = await transaction.table("makeup").insert({
+        name: 'Test Makeup',
+        brand: 'Test Brand',
+        color: 'Test Color'
+    }).returning("*");
+
+    return testMakeup;
+}
 
