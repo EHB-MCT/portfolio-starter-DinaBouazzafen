@@ -2,6 +2,8 @@ const { checkBrandName } = require('./helpers/endpointHelpers');
 const express = require('express');
 const app = express();
 require('dotenv').config();
+const cors = require('cors');
+app.use(cors());
 
 const knex = require('knex');
 const knexfile = require('./db/knexfile.js');
