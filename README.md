@@ -1,4 +1,4 @@
-# 💄 Buckhain's World - A Makeup Enthusiast's Dream 🌟
+# 💄 Buckhain's World 🌟
 
 Welcome to **Buckhain's World**, a whimsical realm where the love for makeup meets the power of technology. This is a place where every brush stroke, every shade, and every palette tells a story. Created by me, Buckhain, as a sanctuary to keep track of all the beautiful things in the world of makeup that catch my eye. 💖
 
